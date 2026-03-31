@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { roadmapData, Topic, TableInfo, VisInfo } from './data';
 import { QuizArea } from './Quiz';
-import { Terminal, BookOpen, ArrowRight, Lightbulb, Code2, Plus, ArrowDown, ChevronRight, CheckCircle2, Layers, Database, Gamepad2 } from 'lucide-react';
+import { Terminal, BookOpen, ArrowRight, Lightbulb, Code2, Plus, ArrowDown, ChevronRight, CheckCircle2, Layers, Database, Gamepad2, Menu, X } from 'lucide-react';
 
 // Component untuk merender tabel visualisasi
 const TableVisualizer = ({ table }: { table: TableInfo }) => {
@@ -147,20 +147,37 @@ const VisualizationArea = ({ data }: { data: VisInfo }) => {
 function App() {
   const [activeTopic, setActiveTopic] = useState<Topic>(roadmapData[0]);
   const [viewMode, setViewMode] = useState<'materi' | 'quiz'>('materi');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-slate-50 font-sans text-slate-800">
+    <div className="flex h-screen bg-slate-50 font-sans text-slate-800 overflow-hidden">
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar / Roadmap */}
-      <div className="w-80 bg-white border-r border-slate-200 flex flex-col h-full shadow-sm z-10 overflow-y-auto">
-        <div className="p-6 border-b border-slate-200 bg-indigo-600 text-white">
-          <div className="flex items-center gap-3 mb-2">
-            <Database className="w-8 h-8" />
-            <h1 className="text-2xl font-bold tracking-tight">SQL SMK</h1>
+      <div className={`fixed lg:static w-80 bg-white border-r border-slate-200 flex flex-col h-full shadow-2xl lg:shadow-sm z-50 transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        <div className="p-6 border-b border-slate-200 bg-indigo-600 text-white flex justify-between items-center flex-shrink-0">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <Database className="w-8 h-8" />
+              <h1 className="text-2xl font-bold tracking-tight">SQL SMK</h1>
+            </div>
+            <p className="text-indigo-100 text-sm">Paham Database tanpa Pusing!</p>
           </div>
-          <p className="text-indigo-100 text-sm">Paham Database tanpa Pusing!</p>
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden p-2 hover:bg-indigo-500 rounded-lg transition-colors"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
         </div>
         
-        <div className="p-4 flex-1">
+        <div className="p-4 flex-1 overflow-y-auto">
           <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">Roadmap Belajar</h2>
           <div className="space-y-2">
             {roadmapData.map((topic) => {
@@ -174,6 +191,7 @@ function App() {
                     onClick={() => {
                       setActiveTopic(topic);
                       setViewMode('materi');
+                      if (!topic.subTopics) setIsSidebarOpen(false);
                     }}
                     className={`w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-all duration-200 ${
                       isMainActive
@@ -201,6 +219,7 @@ function App() {
                           onClick={() => {
                             setActiveTopic(sub);
                             setViewMode('materi');
+                            setIsSidebarOpen(false);
                           }}
                           className={`w-full text-left px-4 py-2.5 rounded-lg text-sm flex items-center gap-3 transition-all ${
                             activeTopic.id === sub.id 
@@ -222,18 +241,33 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col h-full overflow-y-auto bg-slate-50/50">
-        <div className="max-w-5xl w-full mx-auto p-8 py-12">
+      <div className="flex-1 flex flex-col h-full overflow-y-auto bg-slate-50/50 w-full relative">
+        
+        {/* Mobile Header Bar */}
+        <div className="lg:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center gap-3 sticky top-0 z-30 shadow-sm">
+          <button 
+            onClick={() => setIsSidebarOpen(true)}
+            className="p-2 -ml-2 bg-slate-50 hover:bg-slate-100 rounded-lg text-slate-600 transition-colors"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+          <div className="flex items-center gap-2 text-indigo-600 font-bold">
+            <Database className="w-5 h-5" />
+            <span className="text-lg">SQL SMK</span>
+          </div>
+        </div>
+
+        <div className="max-w-5xl w-full mx-auto p-4 md:p-8 py-8 md:py-12">
           
           {/* Header Area */}
-          <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-5">
-              <div className="p-4 bg-indigo-100 text-indigo-600 rounded-2xl shadow-sm border border-indigo-200">
-                <activeTopic.icon className="w-10 h-10" />
+          <div className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4 md:gap-5">
+              <div className="p-3 md:p-4 bg-indigo-100 text-indigo-600 rounded-2xl shadow-sm border border-indigo-200 flex-shrink-0">
+                <activeTopic.icon className="w-8 h-8 md:w-10 md:h-10" />
               </div>
               <div>
-                <h1 className="text-4xl font-extrabold text-slate-900 mb-2">{activeTopic.title}</h1>
-                <div className="flex items-center gap-2 text-slate-500 font-medium">
+                <h1 className="text-2xl md:text-4xl font-extrabold text-slate-900 mb-1 md:mb-2">{activeTopic.title}</h1>
+                <div className="flex items-center gap-2 text-slate-500 font-medium text-sm md:text-base">
                   {viewMode === 'materi' ? (
                     <><BookOpen className="w-4 h-4" /> <span>Materi Pembelajaran SQL</span></>
                   ) : (
