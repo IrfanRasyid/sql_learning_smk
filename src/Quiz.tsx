@@ -10,18 +10,16 @@ interface QuizProps {
 
 export const QuizArea: React.FC<QuizProps> = ({ topicId, onBack }) => {
   // Ambil pertanyaan yang sesuai dengan topik yang dipilih
-  // Jika topicId adalah parent (misal DDL), ambil semua quiz dari parent dan child-nya
   const relevantQuestions = quizData.filter(q => {
+    // 1. Jika kuis persis sama dengan topik yang dipilih (termasuk sub-topik)
     if (q.topicId === topicId) return true;
     
-    // Cek apakah topicId ini adalah child dari topic yang dipilih
+    // 2. Jika topicId adalah parent (misal DDL), ambil semua kuis dari sub-topiknya
     const parentTopic = roadmapData.find(t => t.id === topicId);
     if (parentTopic && parentTopic.subTopics) {
       return parentTopic.subTopics.some(sub => sub.id === q.topicId);
     }
     
-    // Cek apakah topicId yg dipilih adalah child, dan q.topicId adalah parent-nya (kita izinkan quiz parent tampil di child)
-    // Atau lebih baik spesifik saja:
     return false;
   });
 

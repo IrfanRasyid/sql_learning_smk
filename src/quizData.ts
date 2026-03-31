@@ -39,7 +39,7 @@ export const quizData: QuizQuestion[] = [
   // DDL
   {
     id: "q_ddl_create",
-    topicId: "ddl",
+    topicId: "create",
     question: "Perintah DDL apa yang digunakan untuk membuat database atau tabel baru dari awal?",
     options: [
       "MAKE TABLE",
@@ -52,7 +52,7 @@ export const quizData: QuizQuestion[] = [
   },
   {
     id: "q_ddl_alter",
-    topicId: "ddl",
+    topicId: "alter",
     question: "Perintah DDL apa yang digunakan untuk menambah kolom baru bernama 'alamat' ke dalam tabel yang sudah ada?",
     options: [
       "CREATE TABLE alamat",
@@ -65,7 +65,7 @@ export const quizData: QuizQuestion[] = [
   },
   {
     id: "q_ddl_truncate_drop",
-    topicId: "ddl",
+    topicId: "drop",
     question: "Apa perbedaan utama antara DROP dan TRUNCATE?",
     options: [
       "DROP menghapus data saja, TRUNCATE menghapus tabel sepenuhnya",
@@ -80,7 +80,7 @@ export const quizData: QuizQuestion[] = [
   // DML
   {
     id: "q_dml_select",
-    topicId: "dml",
+    topicId: "select",
     question: "Perintah mana yang benar untuk mengambil HANYA kolom 'nama' dan 'jurusan' dari tabel Siswa?",
     options: [
       "GET nama, jurusan FROM Siswa",
@@ -93,7 +93,7 @@ export const quizData: QuizQuestion[] = [
   },
   {
     id: "q_dml_insert",
-    topicId: "dml",
+    topicId: "insert",
     question: "Siswa baru bernama Budi baru saja mendaftar. Perintah DML apa yang digunakan untuk memasukkan data Budi ke tabel Siswa?",
     options: [
       "ADD INTO Siswa VALUES ('Budi')",
@@ -106,7 +106,7 @@ export const quizData: QuizQuestion[] = [
   },
   {
     id: "q_dml_update",
-    topicId: "dml",
+    topicId: "update",
     question: "Jika kamu lupa menambahkan klausa WHERE saat menjalankan perintah UPDATE, apa yang akan terjadi?",
     options: [
       "Akan muncul pesan error dari database",
@@ -119,7 +119,7 @@ export const quizData: QuizQuestion[] = [
   },
   {
     id: "q_dml_delete",
-    topicId: "dml",
+    topicId: "delete",
     question: "Budi pindah sekolah, sehingga datanya harus dihapus dari sistem. Perintah apa yang tepat?",
     options: [
       "REMOVE FROM Siswa WHERE nama = 'Budi'",
@@ -149,7 +149,7 @@ export const quizData: QuizQuestion[] = [
   // JOINs
   {
     id: "q_join_inner",
-    topicId: "joins",
+    topicId: "inner-join",
     question: "Jenis JOIN apa yang HANYA menampilkan data jika ada kecocokan di KEDUA tabel?",
     options: [
       "INNER JOIN",
@@ -162,7 +162,7 @@ export const quizData: QuizQuestion[] = [
   },
   {
     id: "q_join_left",
-    topicId: "joins",
+    topicId: "left-join",
     question: "Wali kelas ingin melihat daftar SEMUA siswa (tabel kiri) beserta nilai remedialnya (tabel kanan). Jika siswa tidak ikut remedial, nilainya biarkan kosong (NULL). JOIN apa yang paling tepat?",
     options: [
       "INNER JOIN",
@@ -175,7 +175,7 @@ export const quizData: QuizQuestion[] = [
   },
   {
     id: "q_join_right",
-    topicId: "joins",
+    topicId: "right-join",
     question: "Terdapat tabel Peminjaman (kiri) dan Buku (kanan). Jika kita ingin melihat SEMUA daftar Buku, baik yang sedang dipinjam maupun yang belum pernah dipinjam sama sekali, JOIN apa yang bisa digunakan?",
     options: [
       "INNER JOIN",
@@ -188,7 +188,7 @@ export const quizData: QuizQuestion[] = [
   },
   {
     id: "q_join_full",
-    topicId: "joins",
+    topicId: "full-outer-join",
     question: "Jika kita ingin menggabungkan tabel Guru dan tabel Ekskul untuk melihat SEMUA Guru dan SEMUA Ekskul (termasuk guru yang tidak pegang ekskul, dan ekskul yang belum punya guru pembina), kita harus menggunakan...",
     options: [
       "INNER JOIN",
