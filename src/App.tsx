@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { roadmapData, Topic, TableInfo, VisInfo } from './data';
-import { QuizArea } from './Quiz';
+import { QuizArea, FinalTestArea } from './Quiz';
 import { Terminal, BookOpen, ArrowRight, Lightbulb, Code2, Plus, ArrowDown, ChevronRight, CheckCircle2, Layers, Database, Gamepad2, Menu, X } from 'lucide-react';
 
 // Component untuk merender tabel visualisasi
@@ -146,7 +146,7 @@ const VisualizationArea = ({ data }: { data: VisInfo }) => {
 
 function App() {
   const [activeTopic, setActiveTopic] = useState<Topic>(roadmapData[0]);
-  const [viewMode, setViewMode] = useState<'materi' | 'quiz'>('materi');
+  const [viewMode, setViewMode] = useState<'materi' | 'quiz' | 'final-test'>('materi');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -270,6 +270,8 @@ function App() {
                 <div className="flex items-center gap-2 text-slate-500 font-medium text-sm md:text-base">
                   {viewMode === 'materi' ? (
                     <><BookOpen className="w-4 h-4" /> <span>Materi Pembelajaran SQL</span></>
+                  ) : viewMode === 'final-test' ? (
+                    <><Gamepad2 className="w-4 h-4" /> <span>Ujian Kompetensi</span></>
                   ) : (
                     <><Gamepad2 className="w-4 h-4" /> <span>Kuis Evaluasi Materi</span></>
                   )}
@@ -287,19 +289,33 @@ function App() {
               >
                 <BookOpen className="w-4 h-4" /> Materi
               </button>
-              <button
-                onClick={() => setViewMode('quiz')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm transition-all ${
-                  viewMode === 'quiz' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
-                }`}
-              >
-                <Gamepad2 className="w-4 h-4" /> Uji Pemahaman
-              </button>
+              
+              {activeTopic.id === 'final-test' ? (
+                <button
+                  onClick={() => setViewMode('final-test')}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm transition-all ${
+                    viewMode === 'final-test' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  <Gamepad2 className="w-4 h-4" /> Mulai Ujian
+                </button>
+              ) : (
+                <button
+                  onClick={() => setViewMode('quiz')}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm transition-all ${
+                    viewMode === 'quiz' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  <Gamepad2 className="w-4 h-4" /> Uji Pemahaman
+                </button>
+              )}
             </div>
           </div>
 
           {viewMode === 'quiz' ? (
             <QuizArea topicId={activeTopic.id} onBack={() => setViewMode('materi')} />
+          ) : viewMode === 'final-test' ? (
+            <FinalTestArea onBack={() => setViewMode('materi')} />
           ) : (
             <>
               {/* Cards Grid */}
@@ -403,14 +419,20 @@ function App() {
               {!activeTopic.subTopics && (
                 <div className="mt-10 bg-indigo-50 border border-indigo-100 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6">
                   <div>
-                    <h3 className="text-lg font-bold text-indigo-900 mb-1">Sudah Paham Materinya?</h3>
-                    <p className="text-indigo-700 text-sm">Yuk uji pemahamanmu tentang {activeTopic.title} dengan kuis singkat.</p>
+                    <h3 className="text-lg font-bold text-indigo-900 mb-1">
+                      {activeTopic.id === 'final-test' ? 'Siap Mengerjakan Ujian?' : 'Sudah Paham Materinya?'}
+                    </h3>
+                    <p className="text-indigo-700 text-sm">
+                      {activeTopic.id === 'final-test' 
+                        ? 'Yuk uji pemahamanmu secara menyeluruh dengan melengkapi baris kode SQL.' 
+                        : `Yuk uji pemahamanmu tentang ${activeTopic.title} dengan kuis singkat.`}
+                    </p>
                   </div>
                   <button 
-                    onClick={() => setViewMode('quiz')}
+                    onClick={() => setViewMode(activeTopic.id === 'final-test' ? 'final-test' : 'quiz')}
                     className="flex-shrink-0 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-sm flex items-center gap-2"
                   >
-                    <Gamepad2 className="w-5 h-5" /> Mulai Kuis
+                    <Gamepad2 className="w-5 h-5" /> {activeTopic.id === 'final-test' ? 'Mulai Ujian' : 'Mulai Kuis'}
                   </button>
                 </div>
               )}

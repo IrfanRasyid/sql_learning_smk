@@ -1,12 +1,233 @@
 import { useState } from 'react';
-import { quizData } from './quizData';
+import { quizData, finalTestData } from './quizData';
 import { roadmapData } from './data';
-import { CheckCircle2, XCircle, ChevronRight, Trophy, RefreshCcw, ArrowLeft, BookOpen, Lightbulb } from 'lucide-react';
+import { CheckCircle2, XCircle, ChevronRight, Trophy, RefreshCcw, ArrowLeft, BookOpen, Lightbulb, Code2 } from 'lucide-react';
 
 interface QuizProps {
   topicId: string;
   onBack: () => void;
 }
+
+export const FinalTestArea: React.FC<{ onBack: () => void }> = ({ onBack }) => {
+  const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [isAnswered, setIsAnswered] = useState(false);
+  const [score, setScore] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+
+  const currentQ = finalTestData[currentQuestionIdx];
+
+  const handleSelectOption = (index: number) => {
+    if (isAnswered) return;
+    setSelectedAnswer(index);
+    setIsAnswered(true);
+    
+    if (index === currentQ.correctAnswerIndex) {
+      setScore(prev => prev + 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentQuestionIdx < finalTestData.length - 1) {
+      setCurrentQuestionIdx(prev => prev + 1);
+      setSelectedAnswer(null);
+      setIsAnswered(false);
+    } else {
+      setShowResult(true);
+    }
+  };
+
+  const handleRetry = () => {
+    setCurrentQuestionIdx(0);
+    setSelectedAnswer(null);
+    setIsAnswered(false);
+    setScore(0);
+    setShowResult(false);
+  };
+
+  if (showResult) {
+    const percentage = Math.round((score / finalTestData.length) * 100);
+    let message = "";
+    if (percentage === 100) message = "Luar Biasa! Kamu sudah siap jadi Database Administrator!";
+    else if (percentage >= 70) message = "Sangat Baik! Kamu sudah menguasai konsep SQL dengan mantap.";
+    else message = "Jangan menyerah! Coba ulas kembali materi-materi sebelumnya.";
+
+    return (
+      <div className="max-w-2xl mx-auto mt-10">
+        <button onClick={onBack} className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 font-medium mb-8 transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Kembali ke Materi
+        </button>
+        
+        <div className="bg-white rounded-3xl p-10 shadow-sm border border-slate-200 text-center">
+          <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-yellow-100 text-yellow-600 mb-6">
+            <Trophy className="w-12 h-12" />
+          </div>
+          <h2 className="text-3xl font-extrabold text-slate-900 mb-2">Hasil Final Test</h2>
+          <p className="text-slate-500 mb-8">{message}</p>
+          
+          <div className="flex justify-center gap-8 mb-10">
+            <div className="text-center">
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Skor Akhir</p>
+              <p className={`text-4xl font-black ${percentage >= 70 ? 'text-emerald-500' : 'text-amber-500'}`}>
+                {percentage}%
+              </p>
+            </div>
+            <div className="w-px bg-slate-200"></div>
+            <div className="text-center">
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-1">Benar</p>
+              <p className="text-4xl font-black text-slate-800">
+                {score} <span className="text-xl text-slate-400 font-medium">/ {finalTestData.length}</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              onClick={handleRetry}
+              className="px-8 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors flex items-center justify-center gap-2"
+            >
+              <RefreshCcw className="w-5 h-5" /> Ulangi Test
+            </button>
+            <button 
+              onClick={onBack}
+              className="px-8 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-colors flex items-center justify-center gap-2 shadow-sm shadow-indigo-200"
+            >
+              <BookOpen className="w-5 h-5" /> Kembali
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Fungsi untuk me-render kode dengan bagian yang kosong
+  const renderCodeSnippet = () => {
+    if (!currentQ.codeSnippet) return null;
+
+    const parts = currentQ.codeSnippet.split('___');
+    
+    return (
+      <div className="bg-slate-900 rounded-2xl overflow-hidden shadow-md border border-slate-800 mb-8">
+        <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
+          <div className="flex items-center gap-2">
+            <Code2 className="w-4 h-4 text-slate-400" />
+            <span className="text-slate-300 text-sm font-mono font-semibold">Lengkapi Sintaks Ini</span>
+          </div>
+        </div>
+        <div className="p-6 overflow-x-auto">
+          <pre className="font-mono text-sm leading-relaxed">
+            {parts.map((part, i) => (
+              <span key={i}>
+                <span className="text-emerald-400">{part}</span>
+                {i < parts.length - 1 && (
+                  <span className={`inline-block border-b-2 px-2 mx-1 font-bold ${
+                    isAnswered 
+                      ? selectedAnswer === currentQ.correctAnswerIndex 
+                        ? 'border-emerald-500 text-emerald-400 bg-emerald-500/20' 
+                        : 'border-red-500 text-red-400 bg-red-500/20'
+                      : 'border-amber-400 text-amber-300 bg-amber-400/20 animate-pulse min-w-[3rem]'
+                  }`}>
+                    {isAnswered ? currentQ.options[selectedAnswer!] : '?'}
+                  </span>
+                )}
+              </span>
+            ))}
+          </pre>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto mt-6">
+      <div className="flex items-center justify-between mb-8">
+        <button onClick={onBack} className="flex items-center gap-2 text-slate-500 hover:text-indigo-600 font-medium transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Batal Test
+        </button>
+        <div className="text-sm font-bold text-amber-600 bg-amber-50 border border-amber-200 px-4 py-1.5 rounded-full">
+          Soal {currentQuestionIdx + 1} dari {finalTestData.length}
+        </div>
+      </div>
+
+      <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200">
+        <div className="mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-900 font-medium leading-relaxed">
+          Skenario: {currentQ.scenario}
+        </div>
+
+        {renderCodeSnippet()}
+
+        <h4 className="text-slate-500 font-bold text-sm uppercase tracking-wider mb-4">Pilih Potongan Kode yang Tepat:</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+          {currentQ.options.map((option, idx) => {
+            const isSelected = selectedAnswer === idx;
+            const isCorrect = idx === currentQ.correctAnswerIndex;
+            
+            let btnClass = "border-slate-200 text-slate-700 hover:border-indigo-300 hover:bg-indigo-50/50";
+            
+            if (isAnswered) {
+              if (isCorrect) {
+                btnClass = "border-emerald-500 bg-emerald-50 text-emerald-800 font-medium ring-1 ring-emerald-500";
+              } else if (isSelected && !isCorrect) {
+                btnClass = "border-red-300 bg-red-50 text-red-700";
+              } else {
+                btnClass = "border-slate-100 text-slate-400 bg-slate-50 opacity-50";
+              }
+            } else if (isSelected) {
+              btnClass = "border-indigo-500 ring-1 ring-indigo-500 bg-indigo-50 text-indigo-800";
+            }
+
+            return (
+              <button
+                key={idx}
+                onClick={() => handleSelectOption(idx)}
+                disabled={isAnswered}
+                className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between group ${btnClass}`}
+              >
+                <span className="text-lg font-mono font-semibold">{option}</span>
+                {isAnswered && isCorrect && <CheckCircle2 className="w-6 h-6 text-emerald-500 flex-shrink-0" />}
+                {isAnswered && isSelected && !isCorrect && <XCircle className="w-6 h-6 text-red-500 flex-shrink-0" />}
+              </button>
+            );
+          })}
+        </div>
+
+        {isAnswered && (
+          <div className={`p-5 rounded-xl mb-8 flex items-start gap-4 ${
+            selectedAnswer === currentQ.correctAnswerIndex 
+              ? 'bg-emerald-50 border border-emerald-100' 
+              : 'bg-amber-50 border border-amber-100'
+          }`}>
+            <Lightbulb className={`w-6 h-6 flex-shrink-0 mt-0.5 ${
+              selectedAnswer === currentQ.correctAnswerIndex ? 'text-emerald-500' : 'text-amber-500'
+            }`} />
+            <div>
+              <p className={`font-bold mb-1 ${
+                selectedAnswer === currentQ.correctAnswerIndex ? 'text-emerald-800' : 'text-amber-800'
+              }`}>
+                {selectedAnswer === currentQ.correctAnswerIndex ? 'Benar Sekali!' : 'Ups, Kurang Tepat!'}
+              </p>
+              <p className="text-slate-700 leading-relaxed">
+                {currentQ.explanation}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {isAnswered && (
+          <div className="flex justify-end border-t border-slate-100 pt-6">
+            <button
+              onClick={handleNext}
+              className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-colors flex items-center gap-2 shadow-sm shadow-indigo-200"
+            >
+              {currentQuestionIdx < finalTestData.length - 1 ? 'Soal Berikutnya' : 'Selesai & Lihat Hasil'}
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export const QuizArea: React.FC<QuizProps> = ({ topicId, onBack }) => {
   // Ambil pertanyaan yang sesuai dengan topik yang dipilih

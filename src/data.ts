@@ -1,4 +1,4 @@
-import { Database, Table, Search, PlusCircle, Edit, Trash2, Key, Link, BarChart, Layers } from 'lucide-react';
+import { Database, Table, Search, PlusCircle, Edit, Trash2, Key, Link, BarChart, Layers, Trophy } from 'lucide-react';
 
 export interface TableInfo {
   name: string;
@@ -655,5 +655,17 @@ export const roadmapData: Topic[] = [
       },
       explanation: "Fungsi Agregasi meringkas banyak baris menjadi satu baris kesimpulan per grup (jurusan)."
     }
+  },
+  {
+    id: "final-test",
+    title: "Ujian Akhir (Final Test)",
+    description: "Uji kemampuan SQL-mu dengan melengkapi baris kode yang hilang! Tantangan ini mencakup semua materi dari DDL, DML, hingga JOINs.",
+    detailedDescription: [
+      "Kamu akan diberikan sebuah skenario / kasus nyata di sekolah.",
+      "Akan ada potongan kode SQL yang rumpang (hilang sebagian).",
+      "Tugasmu adalah memilih potongan kode yang tepat untuk melengkapi sintaks tersebut agar bisa berjalan dengan baik."
+    ],
+    analogy: "Ini ibarat Ujian Kompetensi Keahlian (UKK). Kamu diberi studi kasus membangun sistem sekolah dari nol, dan kamu harus mempraktikkan semua ilmu yang sudah dipelajari sebelumnya!",
+    icon: Trophy,
   }
 ];

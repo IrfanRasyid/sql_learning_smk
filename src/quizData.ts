@@ -7,6 +7,199 @@ export interface QuizQuestion {
   explanation: string;
 }
 
+export interface FinalTestQuestion {
+  id: string;
+  topicId: string; // biasanya 'final-test'
+  scenario: string; // Cerita/kasus
+  codeSnippet: string; // Kode dengan bagian yang hilang, gunakan ___ (3 underscore) untuk bagian yang hilang
+  options: string[]; // Pilihan potongan kode
+  correctAnswerIndex: number;
+  explanation: string;
+}
+
+export const finalTestData: FinalTestQuestion[] = [
+  {
+    id: "ft_1",
+    topicId: "final-test",
+    scenario: "Sekolah baru saja dibangun. Kepala sekolah meminta kamu untuk membuat tempat penyimpanan data siswa yang baru.",
+    codeSnippet: "___ DATABASE Sekolah;",
+    options: ["MAKE", "CREATE", "BUILD", "START"],
+    correctAnswerIndex: 1,
+    explanation: "Untuk membuat database baru dari awal, kita selalu menggunakan perintah CREATE DATABASE."
+  },
+  {
+    id: "ft_2",
+    topicId: "final-test",
+    scenario: "Setelah database selesai, kamu perlu membuat tabel untuk menyimpan daftar Siswa. Kolom yang dibutuhkan adalah id_siswa (angka) dan nama (teks).",
+    codeSnippet: "CREATE ___ Siswa (\n  id_siswa INT PRIMARY KEY,\n  nama VARCHAR(50)\n);",
+    options: ["FILE", "FOLDER", "TABLE", "DATA"],
+    correctAnswerIndex: 2,
+    explanation: "Perintah DDL untuk membuat tabel adalah CREATE TABLE."
+  },
+  {
+    id: "ft_3",
+    topicId: "final-test",
+    scenario: "Oh iya! Kamu lupa menambahkan kolom 'kelas' (teks maksimal 10 huruf). Mari tambahkan kolom tersebut ke tabel yang sudah jadi.",
+    codeSnippet: "ALTER TABLE Siswa\n___ kelas VARCHAR(10);",
+    options: ["INSERT", "ADD", "PUT", "CREATE"],
+    correctAnswerIndex: 1,
+    explanation: "Untuk menambahkan kolom pada tabel yang sudah ada menggunakan ALTER TABLE, kata kunci yang digunakan adalah ADD."
+  },
+  {
+    id: "ft_4",
+    topicId: "final-test",
+    scenario: "Tabel sudah siap. Sekarang ada siswa baru bernama 'Budi' di kelas '10-RPL'. Masukkan datanya!",
+    codeSnippet: "INSERT ___ Siswa (id_siswa, nama, kelas)\nVALUES (1, 'Budi', '10-RPL');",
+    options: ["IN", "TO", "INTO", "INSIDE"],
+    correctAnswerIndex: 2,
+    explanation: "Sintaks standar untuk menambah data baru adalah INSERT INTO nama_tabel."
+  },
+  {
+    id: "ft_5",
+    topicId: "final-test",
+    scenario: "Budi ternyata salah daftar jurusan, dia seharusnya masuk '10-TKJ'. Mari perbaiki datanya.",
+    codeSnippet: "___ Siswa\nSET kelas = '10-TKJ'\nWHERE id_siswa = 1;",
+    options: ["CHANGE", "MODIFY", "ALTER", "UPDATE"],
+    correctAnswerIndex: 3,
+    explanation: "Untuk mengubah atau merevisi isi data yang sudah ada di dalam tabel (DML), kita menggunakan perintah UPDATE."
+  },
+  {
+    id: "ft_6",
+    topicId: "final-test",
+    scenario: "Kepala sekolah ingin melihat semua daftar siswa beserta kelasnya yang ada di tabel Siswa.",
+    codeSnippet: "___ * FROM Siswa;",
+    options: ["GET", "READ", "SHOW", "SELECT"],
+    correctAnswerIndex: 3,
+    explanation: "Perintah DML untuk membaca atau menampilkan data dari tabel adalah SELECT."
+  },
+  {
+    id: "ft_7",
+    topicId: "final-test",
+    scenario: "Kepala sekolah hanya ingin melihat data Budi saja (id_siswa = 1), bukan semua siswa.",
+    codeSnippet: "SELECT * FROM Siswa\n___ id_siswa = 1;",
+    options: ["IF", "WHEN", "WHERE", "FILTER"],
+    correctAnswerIndex: 2,
+    explanation: "Klausa WHERE digunakan untuk menyaring/memfilter data spesifik yang ingin ditampilkan atau dimanipulasi."
+  },
+  {
+    id: "ft_8",
+    topicId: "final-test",
+    scenario: "Ternyata Budi pindah ke sekolah lain. Hapus data Budi dari sistem.",
+    codeSnippet: "___ FROM Siswa\nWHERE id_siswa = 1;",
+    options: ["DROP", "DELETE", "REMOVE", "TRUNCATE"],
+    correctAnswerIndex: 1,
+    explanation: "Untuk menghapus baris data tertentu (DML), gunakan DELETE. Jangan gunakan DROP karena itu akan menghapus tabelnya!"
+  },
+  {
+    id: "ft_9",
+    topicId: "final-test",
+    scenario: "Sekarang ada tabel 'Jurusan' dan tabel 'Siswa'. Kita ingin melihat daftar siswa beserta nama jurusannya. Hubungkan kedua tabel tersebut dengan irisan yang pasti cocok.",
+    codeSnippet: "SELECT Siswa.nama, Jurusan.nama_jurusan\nFROM Siswa\n___ JOIN Jurusan \nON Siswa.id_jurusan = Jurusan.id_jurusan;",
+    options: ["INNER", "OUTER", "LEFT", "RIGHT"],
+    correctAnswerIndex: 0,
+    explanation: "INNER JOIN digunakan untuk menggabungkan dua tabel dan HANYA menampilkan data yang memiliki kecocokan di kedua sisi."
+  },
+  {
+    id: "ft_10",
+    topicId: "final-test",
+    scenario: "Tahun ajaran baru! Semua siswa sudah lulus. Hapus semua isi data murid di tabel Siswa dengan cepat, tapi biarkan struktur tabelnya tetap ada untuk murid baru besok.",
+    codeSnippet: "___ TABLE Siswa;",
+    options: ["DROP", "DELETE", "EMPTY", "TRUNCATE"],
+    correctAnswerIndex: 3,
+    explanation: "TRUNCATE TABLE digunakan untuk mengosongkan/membersihkan isi seluruh tabel dengan sangat cepat (DDL), tanpa merusak struktur tabelnya."
+  },
+  {
+    id: "ft_11",
+    topicId: "final-test",
+    scenario: "Ada siswa kembar yang namanya persis sama. Kamu ingin melihat daftar nama kota asal siswa, tapi tidak ingin ada nama kota yang muncul dua kali.",
+    codeSnippet: "SELECT ___ kota_asal FROM Siswa;",
+    options: ["UNIQUE", "DIFFERENT", "DISTINCT", "SINGLE"],
+    correctAnswerIndex: 2,
+    explanation: "DISTINCT digunakan setelah SELECT untuk memastikan hasil yang ditampilkan hanya nilai yang unik (menghapus duplikasi)."
+  },
+  {
+    id: "ft_12",
+    topicId: "final-test",
+    scenario: "Kepala sekolah ingin melihat daftar siswa diurutkan berdasarkan nilai ujian dari yang terbesar ke terkecil.",
+    codeSnippet: "SELECT nama, nilai FROM Siswa\nORDER BY nilai ___;",
+    options: ["DESC", "ASC", "DOWN", "TOP"],
+    correctAnswerIndex: 0,
+    explanation: "DESC (Descending) digunakan bersama ORDER BY untuk mengurutkan data dari nilai tertinggi ke terendah."
+  },
+  {
+    id: "ft_13",
+    topicId: "final-test",
+    scenario: "Kamu diminta untuk menghitung total jumlah murid yang ada di jurusan 'RPL'.",
+    codeSnippet: "SELECT ___(id_siswa) \nFROM Siswa \nWHERE kelas = 'RPL';",
+    options: ["SUM", "TOTAL", "COUNT", "MAX"],
+    correctAnswerIndex: 2,
+    explanation: "Fungsi agregasi COUNT() digunakan untuk menghitung jumlah baris data yang sesuai dengan kondisi."
+  },
+  {
+    id: "ft_14",
+    topicId: "final-test",
+    scenario: "Sekarang, cari tahu siapa siswa yang mendapatkan nilai paling tinggi (maksimal) di ujian kemarin.",
+    codeSnippet: "SELECT ___(nilai) \nFROM Siswa;",
+    options: ["TOP", "HIGH", "PEAK", "MAX"],
+    correctAnswerIndex: 3,
+    explanation: "MAX() adalah fungsi agregasi untuk mencari nilai tertinggi dari sebuah kolom."
+  },
+  {
+    id: "ft_15",
+    topicId: "final-test",
+    scenario: "Kamu ingin merubah nama kolom 'nama_lengkap' menjadi 'Nama Siswa' SAAT DITAMPILKAN di layar agar lebih mudah dibaca (Alias).",
+    codeSnippet: "SELECT nama_lengkap ___ 'Nama Siswa'\nFROM Siswa;",
+    options: ["TO", "IS", "AS", "FOR"],
+    correctAnswerIndex: 2,
+    explanation: "Kata kunci AS digunakan untuk memberikan nama alias/samaran sementara pada kolom di hasil pencarian."
+  },
+  {
+    id: "ft_16",
+    topicId: "final-test",
+    scenario: "Sekolah punya ekstrakurikuler baru, tapi belum ada guru yang membinanya. Kamu ingin melihat SEMUA daftar ekskul, termasuk yang belum punya guru pembina. Tabel Ekskul ada di sebelah kiri, tabel Guru di kanan.",
+    codeSnippet: "SELECT Ekskul.nama, Guru.nama\nFROM Ekskul\n___ JOIN Guru \nON Ekskul.id_guru = Guru.id_guru;",
+    options: ["INNER", "LEFT", "RIGHT", "FULL OUTER"],
+    correctAnswerIndex: 1,
+    explanation: "LEFT JOIN memastikan SEMUA data dari tabel kiri (Ekskul) akan tampil, meskipun tidak ada kecocokan di tabel kanan (Guru)."
+  },
+  {
+    id: "ft_17",
+    topicId: "final-test",
+    scenario: "Sistem sekolah diretas! Kamu panik dan ingin langsung menghancurkan seluruh tabel 'Siswa' beserta struktur dan datanya hingga lenyap tak tersisa.",
+    codeSnippet: "___ TABLE Siswa;",
+    options: ["DELETE", "TRUNCATE", "REMOVE", "DROP"],
+    correctAnswerIndex: 3,
+    explanation: "DROP TABLE adalah perintah paling destruktif yang menghancurkan struktur tabel dan semua isinya secara permanen dari database."
+  },
+  {
+    id: "ft_18",
+    topicId: "final-test",
+    scenario: "Kamu perlu mencari murid yang namanya diawali dengan huruf 'A', tapi kamu tidak tahu kelanjutan hurufnya.",
+    codeSnippet: "SELECT * FROM Siswa \nWHERE nama ___ 'A%';",
+    options: ["=", "MATCH", "LIKE", "SAME"],
+    correctAnswerIndex: 2,
+    explanation: "Klausa LIKE digunakan untuk pencarian pola teks (pattern matching) menggunakan wildcard seperti '%' atau '_'."
+  },
+  {
+    id: "ft_19",
+    topicId: "final-test",
+    scenario: "Ada kesalahan pengetikan tipe data. Kolom 'no_hp' yang tadinya bertipe INT sekarang ingin kamu ubah menjadi VARCHAR(15).",
+    codeSnippet: "ALTER TABLE Siswa\n___ COLUMN no_hp VARCHAR(15);",
+    options: ["CHANGE", "UPDATE", "MODIFY", "REPLACE"],
+    correctAnswerIndex: 2,
+    explanation: "Tergantung sistem database, MODIFY COLUMN (atau ALTER COLUMN) digunakan di dalam ALTER TABLE untuk mengubah tipe data kolom yang sudah ada."
+  },
+  {
+    id: "ft_20",
+    topicId: "final-test",
+    scenario: "Wali kelas ingin tahu siapa saja murid yang nilainya di antara 70 sampai 80.",
+    codeSnippet: "SELECT * FROM Siswa\nWHERE nilai ___ 70 AND 80;",
+    options: ["BETWEEN", "AMONG", "INSIDE", "RANGE"],
+    correctAnswerIndex: 0,
+    explanation: "BETWEEN digunakan untuk memfilter nilai yang berada dalam sebuah rentang (range) tertentu, mencakup nilai batas bawah dan batas atasnya."
+  }
+];
+
 export const quizData: QuizQuestion[] = [
   // Relational Database
   {
